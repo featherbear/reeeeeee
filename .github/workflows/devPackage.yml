@@ -1,0 +1,23 @@
+name: Package 
+on: [push, workflow_dispatch]
+
+jobs:
+  win64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: 'bitfocus/companion'
+          ref: 'v2.3.1'
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Build
+        shell: bash
+        run: |
+          yarn config set network-timeout 100000 -g
+          yarn config set script-shell bash
+          yarn update
+          yarn add companion-module-presonus-studiolive@$GITHUB_REPOSITORY#$GITHUB_SHA
+          yarn run windist
